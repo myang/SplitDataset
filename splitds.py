@@ -12,15 +12,18 @@ from pathlib import Path
 # directory structure. Meanwhile normalize the file names if needed.
 def normalize_dataset(percent, work_dir):
     print(f'{percent} data for test')
-    print(f'current dir: {work_dir}')
+    print(f'current dir:{os.getcwd()}')
+    print(f'change to: {work_dir}')
 
     os.chdir(work_dir)
-    dirs = os.listdir()
+    dirs = next(os.walk('.'))[1]
     min_file_num = get_min_category_file_num(dirs)
-    train_file_num = int((1 - percent) * min_file_num)
+    train_file_num = int((1.0 - float(percent)) * min_file_num)
 
     # walk through categories
     for subdir in dirs:
+        print()
+        print(f'{subdir}:')
         i = 1
         for file_name in os.listdir(subdir):
             curr_path = Path(subdir)
@@ -31,6 +34,7 @@ def normalize_dataset(percent, work_dir):
                 new_path = Path('../test/' + subdir)
 
             os.renames(curr_path / file_name, new_path / new_name)
+            print('.', end='')
             i = i + 1
     return
 
@@ -53,4 +57,3 @@ if __name__ == '__main__':
         wk_dir = Path('.')
 
     normalize_dataset(sys.argv[1], wk_dir)
-

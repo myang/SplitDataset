@@ -31,15 +31,21 @@ def normalize_dataset(amount, work_dir):
 
 def create_subset(file_num):
     temp_dir = 'temp'
-    os.mkdir(temp_dir)
-    for dataset in os.listdir():
+    if os.path.isdir(temp_dir):
+        shutil.rmtree(temp_dir)
+
+    dirs = next(os.walk('.'))[1]
+
+    for dataset in dirs:
         print(f'create subset of {dataset} data with {file_num} files per category')
         os.chdir(dataset)
-        for subdir in os.listdir():
+        dirs = next(os.walk('.'))[1]
+        for subdir in dirs:
             print(f'{subdir}:')
             curr_path = Path(subdir)
-            temp_path = Path('../' + temp_dir + dataset + subdir)
-            os.mkdir(temp_path)
+            temp_path = Path('../') / temp_dir / dataset / subdir
+            os.makedirs(temp_path)
+
             i = 1
             for file_name in os.listdir(subdir):
                 shutil.copy(curr_path / file_name, temp_path / file_name)
@@ -55,7 +61,8 @@ def create_subset(file_num):
 
 def create_test_set(file_num):
     # walk through categories, rename and move amount of files to subdirectories under 'test' folder
-    for subdir in os.listdir():
+    dirs = next(os.walk('.'))[1]
+    for subdir in dirs:
         print()
         print(f'{subdir}:')
         i = 1

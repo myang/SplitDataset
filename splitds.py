@@ -71,10 +71,12 @@ def create_test_set(file_num):
         print()
         print(f'{subdir}:')
         i = 1
+        padding = len(str(len(os.listdir(subdir))))
+
         for file_name in os.listdir(subdir):
             curr_path = Path(subdir)
             new_path = curr_path
-            new_name = subdir + str(i) + os.path.splitext(file_name)[1]
+            new_name = subdir + str(i).zfill(padding) + os.path.splitext(file_name)[1]
 
             if i > file_num:
                 new_path = Path('../test/' + subdir)

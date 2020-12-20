@@ -34,33 +34,38 @@ def create_subset(file_num):
     if os.path.isdir(temp_dir):
         shutil.rmtree(temp_dir)
 
-    dirs = next(os.walk('.'))[1]
+    sets = {
+        'Train': 1.0,
+        'Test': 0.2
+    }
 
-    for dataset in dirs:
-        print(f'create subset of {dataset} data with {file_num} files per category')
+    for dataset in sets.keys():
         os.chdir(dataset)
+        file_num = int(file_num * sets[dataset])
+        print(f'create {dataset} folder with {file_num} files per category')
+
         dirs = next(os.walk('.'))[1]
         for subdir in dirs:
-            print(f'{subdir}:')
+            print(f'{subdir}:', end='')
             curr_path = Path(subdir)
             temp_path = Path('../') / temp_dir / dataset / subdir
             os.makedirs(temp_path)
 
             i = 1
-            for file_name in os.listdir(subdir):
+            for file_name in sorted(os.listdir(subdir)):
                 shutil.copy(curr_path / file_name, temp_path / file_name)
                 print('.', end='')
                 i = i + 1
                 if i > file_num:
+                    print()
                     break
 
         os.chdir('..')
-        file_num = int(file_num * 0.2)
     return
 
 
 def create_test_set(file_num):
-    # walk through categories, rename and move amount of files to subdirectories under 'test' folder
+    # walk through categories, rename and move the amount of files to subdirectories under 'test' folder
     dirs = next(os.walk('.'))[1]
     for subdir in dirs:
         print()
